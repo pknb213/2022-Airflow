@@ -1,0 +1,79 @@
+{
+	"raw" : {
+		"shardSet2/127.0.0.1:30002" : {
+			"db" : "test",
+			"collections" : 1,
+			"views" : 0,
+			"objects" : 0,
+			"avgObjSize" : 0,
+			"dataSize" : 0,
+			"storageSize" : 4,
+			"freeStorageSize" : 0,
+			"indexes" : 2,
+			"indexSize" : 8,
+			"indexFreeStorageSize" : 0,
+			"totalSize" : 12,
+			"totalFreeStorageSize" : 0,
+			"scaleFactor" : 1024,
+			"fsUsedSize" : 83288968,
+			"fsTotalSize" : 971350180,
+			"ok" : 1
+		},
+		"shardSet1/127.0.0.1:30001" : {
+			"db" : "test",
+			"collections" : 1,
+			"views" : 0,
+			"objects" : 1,
+			"avgObjSize" : 37,
+			"dataSize" : 0.0361328125,
+			"storageSize" : 20,
+			"freeStorageSize" : 0,
+			"indexes" : 2,
+			"indexSize" : 40,
+			"indexFreeStorageSize" : 0,
+			"totalSize" : 60,
+			"totalFreeStorageSize" : 0,
+			"scaleFactor" : 1024,
+			"fsUsedSize" : 83288968,
+			"fsTotalSize" : 971350180,
+			"ok" : 1
+		},
+		"shardSet3/127.0.0.1:30003" : {
+			"db" : "test",
+			"collections" : 2,
+			"views" : 0,
+			"objects" : 0,
+			"avgObjSize" : 0,
+			"dataSize" : 0,
+			"storageSize" : 8,
+			"freeStorageSize" : 0,
+			"indexes" : 3,
+			"indexSize" : 12,
+			"indexFreeStorageSize" : 0,
+			"totalSize" : 20,
+			"totalFreeStorageSize" : 0,
+			"scaleFactor" : 1024,
+			"fsUsedSize" : 83288968,
+			"fsTotalSize" : 971350180,
+			"ok" : 1
+		}
+	},
+	"objects" : 1,
+	"avgObjSize" : 37,
+	"dataSize" : 0,
+	"storageSize" : 32,
+	"totalSize" : 92,
+	"indexes" : 7,
+	"indexSize" : 60,
+	"scaleFactor" : 1024,
+	"fileSize" : 0,
+	"ok" : 1,
+	"$clusterTime" : {
+		"clusterTime" : ,
+		"signature" : {
+			"hash" : ,
+			"keyId" : NumberLong(0)
+		}
+	},
+	"operationTime" : 
+}
