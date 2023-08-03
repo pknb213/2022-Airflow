@@ -6,7 +6,7 @@ from airflow import DAG
 
 # Operators; we need this to operate!
 from airflow.operators.bash import BashOperator
-from airflow.operators.dummy import DummyOperator
+from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
 from airflow.utils.trigger_rule import TriggerRule
 
@@ -68,7 +68,7 @@ with DAG( **dag_args ) as dag:
         trigger_rule=TriggerRule.NONE_FAILED
     )
 
-    dummy_1 = DummyOperator(task_id="path1")
+    dummy_1 = EmptyOperator(task_id="path1")
 
 
     t1 >> t2 >> dummy_1 >> t3 >> complete

@@ -19,6 +19,7 @@ def print_result(**kwargs):
     r = kwargs["task_instance"].xcom_pull(key='result_msg')
     print("message : ", r)
 
+
 default_args = {
     'owner': 'owner-name',
     'depends_on_past': False,
@@ -53,7 +54,7 @@ with DAG( **dag_args ) as dag:
     modeling_task = PythonOperator(
         task_id='modeling',
         python_callable=titanic.run_modeling,
-        op_kwargs={'n_estimator': 100, 'flag' : True}
+        op_kwargs={'n_estimator': 100, 'flag': True}
     )
 
     msg = PythonOperator(
