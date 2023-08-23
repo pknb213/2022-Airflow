@@ -1,8 +1,19 @@
-
 from datetime import datetime, timedelta
 from textwrap import dedent
 from airflow import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+from Braze import *
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+
+def print_result(**kwargs):
+    r = kwargs["task_instance"].xcom_pull(key='result_msg')
+    print("message : ", r)
+
 
 default_args = {
     'owner': 'Cheon YoungJo',
@@ -12,23 +23,10 @@ default_args = {
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=15),
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
-    # 'wait_for_downstream': False,
-    # 'dag': dag,
-    # 'sla': timedelta(hours=2),
-    # 'execution_timeout': timedelta(seconds=300),
-    # 'on_failure_callback': some_function,
-    # 'on_success_callback': some_other_function,
-    # 'on_retry_callback': another_function,
-    # 'sla_miss_callback': yet_another_function,
-    # 'trigger_rule': 'all_success'
 }
 with DAG(
     'Braze Update By External_Id API',
-    default_args=default_args,
+    **default_args,
     description='A simple Echo Test DAG',
     schedule_interval=timedelta(days=1),
     start_date=datetime(2023, 8, 3),
@@ -36,23 +34,41 @@ with DAG(
     tags=['Braze_API'],
 ) as dag:
     t1 = BashOperator(
-        task_id='echo-1',
-        bash_command='echo Nice To Meet You',
+        task_id='start',
+        bash_command='echo "Braze Workflow Start!!"',
+    )
+
+    t2 = PythonOperator(
+        task_id='internal_db_loading',
+        depends_on_past=True,
+        python_callable={},
         retries=3,
     )
 
-    t2 = BashOperator(
-        task_id='echo-2',
+    t3 = PythonOperator(
+        task_id='transforming',
         depends_on_past=True,
-        bash_command='echo Nice To Meet You Too',
+        python_callable={},
         retries=3,
     )
 
-    t3 = BashOperator(
-        task_id='echo-3',
+    t4 = PythonOperator(
+        task_id='requesting',
         depends_on_past=True,
-        bash_command='echo Nice To Meet You Too Too',
+        python_callable={},
         retries=3,
+    )
+
+    t5 = PythonOperator(
+        task_id='msg',
+        depends_on_past=True,
+        python_callable=print_result
+    )
+
+    t6 = BashOperator(
+        task_id='complete',
+        depends_on_past=True,
+        bash_command='echo "Braze Workflow Complete!!"',
     )
 
     t1.doc_md = dedent(
