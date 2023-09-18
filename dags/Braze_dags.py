@@ -24,7 +24,18 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(minutes=15),
 }
-with DAG(
+
+# 분기를 결정할 Python 함수 정의
+def decide_branch(**kwargs):
+    # 여기에서 특정 조건을 평가하고 분기를 결정
+    some_condition = True
+    if some_condition:
+        return 'task_A'
+    else:
+        return 'task_B'
+
+
+with (DAG(
     'Braze Update By External_Id API',
     **default_args,
     description='A simple Echo Test DAG',
@@ -32,7 +43,7 @@ with DAG(
     start_date=datetime(2023, 8, 3),
     catchup=False,
     tags=['Braze_API'],
-) as dag:
+) as dag):
     t1 = BashOperator(
         task_id='start',
         bash_command='echo "Braze Workflow Start!!"',
@@ -43,6 +54,14 @@ with DAG(
         depends_on_past=True,
         python_callable={},
         retries=3,
+    )
+
+    # BranchPythonOperator를 사용하여 분기 결정 함수를 DAG에 추가
+    branch_task = BranchPythonOperator(
+        task_id='branch_task',
+        python_callable=decide_branch,
+        provide_context=True,  # 실행 컨텍스트 정보를 파라미터로 전달
+        dag=dag,
     )
 
     t3 = PythonOperator(
@@ -87,4 +106,6 @@ with DAG(
     This is a documentation placed anywhere
     """  # otherwise, type it like this
 
-    t1 >> t2 >> t3
+    t1 >> t2 >> branch_task
+    branch_task >> t3 >> t5 >> t6
+    branch_task >> t4 >> t5 >> t6
