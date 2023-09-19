@@ -7,6 +7,10 @@ from Braze import *
 
 import sys
 import os
+
+from Braze.braze import BrazeMain
+from Braze.mysql import MysqlMain
+
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
@@ -16,7 +20,7 @@ def print_result(**kwargs):
 
 
 default_args = {
-    'owner': 'Cheon YoungJo',
+    'owner': 'CheonYoungJo',
     'depends_on_past': True,
     'email': ['pknb213@naver.com'],
     'email_on_failure': True,
@@ -24,6 +28,7 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(minutes=15),
 }
+
 
 # 분기를 결정할 Python 함수 정의
 def decide_branch(**kwargs):
@@ -35,15 +40,18 @@ def decide_branch(**kwargs):
         return 'task_B'
 
 
-with (DAG(
-    'Braze Update By External_Id API',
-    **default_args,
+braze = BrazeMain()
+mysql = MysqlMain()
+
+with DAG(
+    dag_id='Braze-Update-By-ExternalId-API',
+    default_args=default_args,
     description='A simple Echo Test DAG',
     schedule_interval=timedelta(days=1),
     start_date=datetime(2023, 8, 3),
     catchup=False,
     tags=['Braze_API'],
-) as dag):
+) as dag:
     t1 = BashOperator(
         task_id='start',
         bash_command='echo "Braze Workflow Start!!"',
@@ -52,7 +60,7 @@ with (DAG(
     t2 = PythonOperator(
         task_id='internal_db_loading',
         depends_on_past=True,
-        python_callable={},
+        python_callable=mysql.fetch_member,
         retries=3,
     )
 
@@ -67,14 +75,14 @@ with (DAG(
     t3 = PythonOperator(
         task_id='transforming',
         depends_on_past=True,
-        python_callable={},
+        python_callable=braze.post,
         retries=3,
     )
 
     t4 = PythonOperator(
         task_id='requesting',
         depends_on_past=True,
-        python_callable={},
+        python_callable=braze.transform,
         retries=3,
     )
 

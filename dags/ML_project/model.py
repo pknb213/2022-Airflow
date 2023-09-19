@@ -4,7 +4,6 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
 
-
 class TitanicModeling:
     def __init__(self):
         pass

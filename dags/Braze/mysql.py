@@ -1,8 +1,9 @@
 import aiomysql
-import os
+import sys, os
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path='.env')
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
 class MysqlMain():
